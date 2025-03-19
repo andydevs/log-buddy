@@ -1,0 +1,15 @@
+[project]
+name            = "log-buddy"
+version         = "0.1.0"
+requires-python = ">=3.12"
+
+[[project.authors]]
+name  = "Anshul Kharbanda"
+email = "akanshul97@gmail.com"
+
+[project.optional-dependencies]
+dev = [ "pytest" ]
+
+[tool.pytest.ini_options]
+testpaths = [ "test" ]
+addopts   = "-v"
