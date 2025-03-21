@@ -14,14 +14,7 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
-def log_function(
-    parent: Logger,
-    level: int = DEBUG,
-    log_calls: bool = True,
-    log_output: bool = True,
-    log_error: bool = True,
-    error_level: int = ERROR,
-) -> Callable[[Callable[Concatenate[Logger, P], R]], Callable[P, R]]:
+def log_function(parent: Logger, level: int = DEBUG, error_level: int = ERROR) -> Callable[[Callable[Concatenate[Logger, P], R]], Callable[P, R]]:
     """
     Decorate a function with code to create sub log context log calls for
     function. The function can also accept it's own log context to provide
@@ -38,16 +31,7 @@ def log_function(
 
     :param Logger parent: Logger that the child logger is created from
 
-    :param int level: The level that calls and outputs the function are logged to
-
-    :param bool log_calls: If True, log_function will log any function calls
-                            with parameters (plus output and errors if set)
-
-    :param bool log_output: If True and log_calls is True, log_function will
-                            log the results of the function call
-
-    :param bool log_error: If True and log_calls is True, log_function will
-                            log any errors raised before reraising them
+    :param int level: The level that calls and outputs of the function are logged to
 
     :param int error_level: If log_error and log_calls is True, this will be
                             the level that error messages are logged in
@@ -67,16 +51,13 @@ def log_function(
             Function with wrapped logging functionality
             """
             log = parent.getChild(func.__name__)
-            if log_calls:
-                log.log(level, f"Called with args {args} and kwargs {kwargs}")
+            log.log(level, f"Called with args {args} and kwargs {kwargs}")
             try:
                 result = func(log, *args, **kwargs)
-                if log_calls and log_output:
-                    log.log(level, f"Returned {result}")
+                log.log(level, f"Returned {result}")
                 return result
             except Exception as e:
-                if log_calls and log_error:
-                    log.log(error_level, f"Raised exception: {e!r}")
+                log.log(error_level, f"Raised exception: {e!r}")
                 raise e
 
         return logged_function
