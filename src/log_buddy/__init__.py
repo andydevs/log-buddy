@@ -1,7 +1,9 @@
 """
 Logging utilities
 """
+
 from logging import *
+from .log_function import log_function
 import inspect
 
 
